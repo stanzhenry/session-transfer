@@ -28,16 +28,16 @@ jobs:
         php-version: '8.2'
         tools: composer
 
-    - name: Install dependencies (keeping all files)
+    - name: Install dependencies (including vendor)
       working-directory: ./session-transfer
       run: |
-        composer require guzzlehttp/guzzle --no-interaction --no-progress --no-ignore-platform-reqs
+        composer require guzzlehttp/guzzle --no-interaction --no-progress --ignore-platform-reqs
         composer dump-autoload
 
-    - name: Commit EVERYTHING (including vendor)
+    - name: Commit EVERYTHING
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
         git add .
-        git commit -m "Add complete project with all files"
+        git commit -m "Add complete project with all files including vendor"
         git push
