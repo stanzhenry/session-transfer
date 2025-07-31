@@ -7,15 +7,19 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # This grants the workflow write permissions
+      
     steps:
     - uses: actions/checkout@v4
-    
+      with:
+        persist-credentials: true  # This preserves the auth token
+        
     - name: Create directory structure
       run: |
         mkdir -p session-transfer
         mkdir -p session-transfer/sessions
         chmod 700 session-transfer/sessions
-        # Add placeholder files to make Git track the directories
         touch session-transfer/.gitkeep
         touch session-transfer/sessions/.gitkeep
         
