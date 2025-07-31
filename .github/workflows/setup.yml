@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Create directories
+    - name: Create directory structure
       run: |
         mkdir -p session-transfer/sessions
         chmod 700 session-transfer/sessions
@@ -17,7 +17,10 @@ jobs:
       uses: php-actions/composer@v6
       with:
         command: install
-        working_dir: session-transfer
+        
+    - name: Move vendor to subdirectory
+      run: |
+        mv vendor session-transfer/
         
     - name: Commit changes
       run: |
