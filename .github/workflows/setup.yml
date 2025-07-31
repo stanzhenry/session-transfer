@@ -1,0 +1,28 @@
+name: Project Setup
+
+on: [push]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Create directories
+      run: |
+        mkdir -p session-transfer/sessions
+        chmod 700 session-transfer/sessions
+        
+    - name: Install dependencies
+      uses: php-actions/composer@v6
+      with:
+        command: install
+        working_dir: session-transfer
+        
+    - name: Commit changes
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add .
+        git commit -m "Automated setup by GitHub Actions" || echo "No changes to commit"
+        git push
