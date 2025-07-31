@@ -1,3 +1,6 @@
 vendor/
 .env
 sessions/*
+vendor/
+.env
+sessions/*
