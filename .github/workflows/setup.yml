@@ -13,20 +13,28 @@ jobs:
     - name: Create directory structure
       run: |
         mkdir -p session-transfer
-        chmod 755 session-transfer
+        mkdir -p session-transfer/sessions
+        chmod 700 session-transfer/sessions
+        # Add placeholder files to make Git track the directories
+        touch session-transfer/.gitkeep
+        touch session-transfer/sessions/.gitkeep
         
     - name: Install dependencies
       working-directory: ./session-transfer
       run: |
         composer require guzzlehttp/guzzle --no-interaction --no-progress
         
-    - name: Create sessions directory
-      run: |
-        mkdir -p session-transfer/sessions
-        chmod 700 session-transfer/sessions
-        
     - name: Add .gitignore
       run: |
         echo "vendor/" >> session-transfer/.gitignore
         echo ".env" >> session-transfer/.gitignore
         echo "sessions/*" >> session-transfer/.gitignore
+        echo "!.gitkeep" >> session-transfer/sessions/.gitignore
+        
+    - name: Commit and push changes
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add .
+        git commit -m "Add project structure" || echo "No changes to commit"
+        git push
