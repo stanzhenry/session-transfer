@@ -1,6 +1,7 @@
 name: Project Setup
 
 on:
+  workflow_dispatch:  # Allows manual triggering
   push:
     branches: [ main ]
 
@@ -8,13 +9,13 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # This grants the workflow write permissions
-      
+      contents: write
+
     steps:
     - uses: actions/checkout@v4
       with:
-        persist-credentials: true  # This preserves the auth token
-        
+        persist-credentials: true
+
     - name: Create directory structure
       run: |
         mkdir -p session-transfer
@@ -22,23 +23,31 @@ jobs:
         chmod 700 session-transfer/sessions
         touch session-transfer/.gitkeep
         touch session-transfer/sessions/.gitkeep
-        
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        tools: composer
+
     - name: Install dependencies
       working-directory: ./session-transfer
       run: |
         composer require guzzlehttp/guzzle --no-interaction --no-progress
-        
+        # Generate autoload files
+        composer dump-autoload
+
     - name: Add .gitignore
       run: |
         echo "vendor/" >> session-transfer/.gitignore
         echo ".env" >> session-transfer/.gitignore
         echo "sessions/*" >> session-transfer/.gitignore
         echo "!.gitkeep" >> session-transfer/sessions/.gitignore
-        
+
     - name: Commit and push changes
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
         git add .
-        git commit -m "Add project structure" || echo "No changes to commit"
+        git commit -m "Add project structure with dependencies" || echo "No changes to commit"
         git push
